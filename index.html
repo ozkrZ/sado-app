@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>App Saldo</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- scripts de inicialización -->
+    <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+        let config = {
+            apiKey: "AIzaSyC1AkVmjMRoLQFujTG-1VHnvIKhTG4VKvM",
+            authDomain: "app-saldo-id.firebaseapp.com",
+            databaseURL: "https://app-saldo-id.firebaseio.com",
+            projectId: "app-saldo-id",
+            storageBucket: "app-saldo-id.appspot.com",
+            messagingSenderId: "550335869006"
+        };
+
+        firebase.initializeApp(config);
+    </script>
+
+    <!-- componentes -->
+    <link rel="import" href="bower_components/iron-pages/iron-pages.html">
+    
+    <link rel="import" href="./src/login-element.html">
+    <link rel="import" href="./src/register-element.html">
+    <link rel="import" href="./src/main-element.html">
+
+</head>
+<body>
+    
+    <iron-pages selected="0">
+        <login-element></login-element>
+        <register-element></register-element>
+        <main-element></main-element>
+    </iron-pages>
+    
+    <script>
+        document.addEventListener('click', (e) => {
+            let pages = document.querySelector('iron-pages');
+            pages.selectNext();
+        });
+
+    </script>
+</body>
+</html>

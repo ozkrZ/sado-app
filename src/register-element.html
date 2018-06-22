@@ -1,0 +1,22 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="register-element">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+        <span>register-element</span>
+    </template>
+    <script>       
+        class registerElement extends Polymer.Element {            
+            static get is() { return 'register-element'; }
+            static get properties() {
+                return {   };
+            }
+        }
+
+        window.customElements.define(registerElement.is, registerElement);
+    </script>
+</dom-module>
