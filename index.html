@@ -23,6 +23,8 @@
         firebase.initializeApp(config);
     </script>
 
+    <!-- Polymer libs-->
+    <link rel="import" href="bower_components/polymer/lib/elements/dom-bind.html">
     <!-- componentes -->
     <link rel="import" href="bower_components/iron-pages/iron-pages.html">
     
@@ -32,19 +34,34 @@
 
 </head>
 <body>
-    
-    <iron-pages selected="0">
-        <login-element></login-element>
-        <register-element></register-element>
-        <main-element></main-element>
-    </iron-pages>
-    
+    <dom-bind>
+        <template>
+            <iron-pages selected="[[page]]">
+                <login-element></login-element>
+                <register-element user-data="[[userData]]"></register-element>
+                <main-element></main-element>
+            </iron-pages>
+        </template>
+    </dom-bind>
     <script>
-        document.addEventListener('click', (e) => {
-            let pages = document.querySelector('iron-pages');
-            pages.selectNext();
+        const $bind = document.querySelector('dom-bind');
+        const $login = document.querySelector('login-element');
+        
+        $bind.page = 0;
+
+        $login.addEventListener('login', (ev) => {
+            localStorage.setItem('page', 1);
+            localStorage.setItem('userData', JSON.stringify(ev.detail));
+            window.location.reload(); // reload page to apply page change when login
         });
 
+        if (localStorage.getItem('userData')) {
+            $bind.userData = JSON.parse(localStorage.getItem('userData'));
+        }
+
+        if (localStorage.getItem('page')) {
+            $bind.page = localStorage.getItem('page');
+        } 
     </script>
 </body>
 </html>

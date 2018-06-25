@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <dom-module id="register-element">
     <template>
@@ -7,13 +9,36 @@
                 display: block
             }
         </style>
-        <span>register-element</span>
+        <h1>Registro de datos</h1>
+        <paper-input id="userName" label="Nombre"></paper-input>
+        <paper-input id="userBankAccount" label="Cuenta bancaria"></paper-input>
+        <paper-input id="userPhone" label="Celular"></paper-input>
+        <paper-input id="userEmail" label="Email (opcional)"></paper-input>  
+        <paper-button raised>continuar</paper-button>
     </template>
     <script>       
         class registerElement extends Polymer.Element {            
             static get is() { return 'register-element'; }
             static get properties() {
-                return {   };
+                return { 
+                    userData: {
+                        type: Object,
+                        observer: "onUserData"
+                    }
+                  };
+            }
+            
+            // observer of userData property, it is executed when set property data-user 
+            onUserData() {
+                console.log(this.userData);
+                this.renderData();
+            }
+            
+            // if the next data exist, render into form as value
+            renderData() {
+                this.userData.displayName ?  this.$.userName.value = this.userData.displayName : null;
+                this.userData.phoneNumber ?  this.$.userPhone.value = this.userData.phoneNumber : null;
+                this.userData.email ?  this.$.userEmail.value = this.userData.email : null;
             }
         }
 

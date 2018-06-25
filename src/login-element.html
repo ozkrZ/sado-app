@@ -22,10 +22,7 @@
             static get is() { return 'login-element'; }
             static get properties() {
                 return {  
-                    redirectPath: {
-                        type: String,
-                        value: "http://localhost:8081"
-                    }
+
                  };
             }
 
@@ -35,11 +32,12 @@
                 this.set('uiConfig', // ui configuration
                     {
                         callbacks: {
+                            signInSuccess: function(currentUser, credential, redirectUrl) { return false; },
                             signInSuccessWithAuthResult: function(authResult, redirectUrl) {
                                 // User successfully signed in.
                                 // Return type determines whether we continue the redirect automatically
                                 // or whether we leave that to developer to handle.
-                                return true;
+                                return false;
                             },
                             uiShown: function() {
                                 // The widget is rendered.
@@ -49,7 +47,6 @@
                         },
                         // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
                         signInFlow: 'popup',
-                        signInSuccessUrl: self.redirectPath,
                         signInOptions: [
                         // Leave the lines as is for the providers you want to offer your users.
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -60,7 +57,22 @@
                 // inizilize my auth firebase ui
                 this.set('ui', new firebaseui.auth.AuthUI(firebase.auth()));
                 this.ui.start(this.$.firebaseuiAuthContainer, this.uiConfig);
+                
+                firebase.auth().onAuthStateChanged((user) => {
+                    if (user) {
+                        this.dispatchEvent(new CustomEvent('login', {
+                            bubbles: true,
+                            composed: true,
+                            detail: user
+                        }));
+                    } 
+                    else {
+                        console.log('Sign out or user is not logged');
+                        
+                    }
+                });
             }
+
         }
 
         window.customElements.define(loginElement.is, loginElement);
