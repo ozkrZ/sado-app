@@ -38,12 +38,14 @@
             </section>
             <section class="card">
                 <h1>Registro de Contactos</h1>
+                <p><b>Contacto [[contactNumber]]</b></p>
+                <p id="errorContact" class="error-text hide">Nombre es obligatorio, celular es obligatorios y numérico</p>
                 <paper-input id="contactName" label="Nombre del contacto"></paper-input>
                 <paper-input id="contactPhone" label="Celular del contacto"></paper-input>
                 <paper-input id="contactEmail" label="Email del contacto (opcional)"></paper-input>
                 
-                <paper-button raised>Añadir otro contacto</paper-button>
-                <paper-button raised>Terminar</paper-button>
+                <paper-button on-click="addContact" raised>Añadir otro contacto</paper-button>
+                <paper-button on-click="finishRegister" raised>Terminar</paper-button>
                                     
             </section>
         </iron-pages>
@@ -58,8 +60,16 @@
                         type: Object,
                         observer: "onUserData"
                     },
+                    contactNumber:{
+                        type: Number,
+                        value: 1
+                    },
                     page: String,
-                    userProfile: Object
+                    userProfile: Object,
+                    userContacts: {
+                        type: Array,
+                        value: []
+                    }
                   };
             }
 
@@ -96,6 +106,67 @@
                 else {
                     this.$.errorText.classList.remove('hide');
                 }
+            }
+
+            addContact() {
+                let contact = {};
+                if (this.validateContact()) {
+                    contact['name'] = this.$.contactName.value;
+                    contact['phone'] = this.$.contactPhone.value;
+                    this.$.contactEmail.value ? contact['email'] = this.$.contactEmail.value : null;
+
+                    this.userContacts.push(contact);
+                    this.set('contactNumber', this.contactNumber + 1);
+
+                    this.$.contactName.value = null;
+                    this.$.contactPhone.value = null;
+                    this.$.contactEmail.value = null;
+                    
+                    this.$.errorContact.classList.add('hide');
+
+                    console.log(this.userContacts);
+                    return true;
+                    
+                }
+                else {
+                    this.$.errorContact.classList.remove('hide');
+                    return false;
+                }
+            }
+            
+
+            validateContact() {
+                if (this.$.contactName.value && this.$.contactPhone.value && !isNaN(this.$.contactPhone.value)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            finishRegister() {
+                console.log('finish');
+                if (this.$.contactName.value || this.$.contactPhone.value || this.$.contactEmail.value) {
+                    if(this.addContact()) {
+                        this.finished();
+                        console.log('finish contact');
+                    }
+                }
+                else {
+                    console.log('finish finished');
+                    this.finished();
+                }
+            }
+
+            finished() {
+                this.userProfile['contacts'] = this.userContacts;
+                this.dispatchEvent(new CustomEvent('registered', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.userProfile
+                }));
+                console.log(this.userProfile);
+                
             }
         }
 

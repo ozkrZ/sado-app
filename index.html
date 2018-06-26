@@ -10,6 +10,7 @@
     <!-- scripts de inicialización -->
     <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <!-- credenciales de firebase -->
     <script>
         let config = {
             apiKey: "AIzaSyC1AkVmjMRoLQFujTG-1VHnvIKhTG4VKvM",
@@ -25,9 +26,10 @@
 
     <!-- Polymer libs-->
     <link rel="import" href="bower_components/polymer/lib/elements/dom-bind.html">
-    <!-- componentes -->
+    <!-- Polymer componentes -->
     <link rel="import" href="bower_components/iron-pages/iron-pages.html">
     
+    <!-- Nuestros propios componentes-->
     <link rel="import" href="./src/login-element.html">
     <link rel="import" href="./src/register-element.html">
     <link rel="import" href="./src/main-element.html">
@@ -44,17 +46,31 @@
         </template>
     </dom-bind>
     <script>
+        // seleccionamos nuestros elmentos del DOM
         const $bind = document.querySelector('dom-bind');
         const $login = document.querySelector('login-element');
+        const $register = document.querySelector('register-element');
         
         $bind.page = 0;
 
+        /*
+        * Escuchamos el login y cuando se dispará y guardamos nuestro estado en local storage
+        * tanto de la página como los datos del usuario y refrescamos la página.
+        */
         $login.addEventListener('login', (ev) => {
             localStorage.setItem('page', 1);
             localStorage.setItem('userData', JSON.stringify(ev.detail));
             window.location.reload(); // reload page to apply page change when login
         });
 
+        // Escuchamos el evento registered y si es válido pasamos al componente principal
+        $register.addEventListener('registered', (ev) => {
+            localStorage.setItem('page', 2);
+            localStorage.setItem('userProfile', JSON.stringify(ev.detail));
+            window.location.reload();
+        });
+
+        // verificamos si existe un estado anterior en nuestra app y lo recuperamos en caso afirmativo
         if (localStorage.getItem('userData')) {
             $bind.userData = JSON.parse(localStorage.getItem('userData'));
         }

@@ -3,19 +3,21 @@
 
 <dom-module id="login-element">
     <template>
+        <!-- estilos de firebaseui -->
         <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
         <style>
             :host {
                 display: block
             }
         </style>
-        <span>login-element</span>
         <div class="card">
             <h2>Sign In/ Sign Up </h2>
+            <!-- aqui se renderizará nuestro login -->
             <div id="firebaseuiAuthContainer"></div>
             <div id="loader"><span>Loading...</span></div>
         </div>
     </template>
+    <!-- script para manaejar la lógica de nuestro login -->
     <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
     <script>       
         class loginElement extends Polymer.Element {            
@@ -58,8 +60,10 @@
                 this.set('ui', new firebaseui.auth.AuthUI(firebase.auth()));
                 this.ui.start(this.$.firebaseuiAuthContainer, this.uiConfig);
                 
+                // cuando un estado de login cambié se ejecuta esta función
                 firebase.auth().onAuthStateChanged((user) => {
                     if (user) {
+                        // si el logeo es correcto dispará el evento login.
                         this.dispatchEvent(new CustomEvent('login', {
                             bubbles: true,
                             composed: true,
