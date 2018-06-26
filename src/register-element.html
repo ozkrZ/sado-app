@@ -8,13 +8,46 @@
             :host {
                 display: block
             }
+            .card {
+                width: 500px;
+                margin: 24px;
+                padding: 16px;
+                color: #757575;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+            .hide {
+               display: none !important; 
+            }
+            .error-text {
+                font-family: cursive;
+                color:crimson;
+            }
         </style>
-        <h1>Registro de datos</h1>
-        <paper-input id="userName" label="Nombre"></paper-input>
-        <paper-input id="userBankAccount" label="Cuenta bancaria"></paper-input>
-        <paper-input id="userPhone" label="Celular"></paper-input>
-        <paper-input id="userEmail" label="Email (opcional)"></paper-input>  
-        <paper-button raised>continuar</paper-button>
+        
+        <iron-pages selected="[[page]]">
+            <section class="card">
+                <h1>Registro de Datos</h1>
+                <p id="errorText" class="error-text hide">Nombre es obligatorio, cuenta bancaria y celular son obligatorios y numéricos</p>
+                <paper-input id="userName" label="Nombre"></paper-input>
+                <paper-input id="userBankAccount" label="Cuenta bancaria"></paper-input>
+                <paper-input id="userPhone" label="Celular"></paper-input>
+                <paper-input id="userEmail" label="Email (opcional)"></paper-input>  
+                <paper-button id="continue" on-click="validateAndContinue"  raised>continuar</paper-button>
+            </section>
+            <section class="card">
+                <h1>Registro de Contactos</h1>
+                <paper-input id="contactName" label="Nombre del contacto"></paper-input>
+                <paper-input id="contactPhone" label="Celular del contacto"></paper-input>
+                <paper-input id="contactEmail" label="Email del contacto (opcional)"></paper-input>
+                
+                <paper-button raised>Añadir otro contacto</paper-button>
+                <paper-button raised>Terminar</paper-button>
+                                    
+            </section>
+        </iron-pages>
+        
     </template>
     <script>       
         class registerElement extends Polymer.Element {            
@@ -24,10 +57,18 @@
                     userData: {
                         type: Object,
                         observer: "onUserData"
-                    }
+                    },
+                    page: String,
+                    userProfile: Object
                   };
             }
-            
+
+            ready() {
+                super.ready();
+                this.set('page', 0);
+                this.set('userProfile', {})
+            }
+
             // observer of userData property, it is executed when set property data-user 
             onUserData() {
                 console.log(this.userData);
@@ -39,6 +80,22 @@
                 this.userData.displayName ?  this.$.userName.value = this.userData.displayName : null;
                 this.userData.phoneNumber ?  this.$.userPhone.value = this.userData.phoneNumber : null;
                 this.userData.email ?  this.$.userEmail.value = this.userData.email : null;
+            }
+
+            validateAndContinue() {
+                if (this.$.userName.value && this.$.userPhone.value && !isNaN(this.$.userPhone.value) 
+                && this.$.userBankAccount.value && !isNaN(this.$.userBankAccount.value)) {
+                    this.userProfile['uid'] = this.userData.uid;
+                    this.userProfile['name'] = this.$.userName.value;
+                    this.userProfile['phone'] = this.$.userPhone.value;
+                    this.userProfile['bankAccount'] = this.$.userBankAccount.value;
+                    this.$.userEmail.value ? this.userProfile['email'] = this.$.userEmail.value : null;
+                    this.set('page', 1);
+                    console.log(this.userProfile);
+                }
+                else {
+                    this.$.errorText.classList.remove('hide');
+                }
             }
         }
 
